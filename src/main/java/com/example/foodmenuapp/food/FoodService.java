@@ -1,15 +1,26 @@
 package com.example.foodmenuapp.food;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
-@RequiredArgsConstructor
 public class FoodService {
 
     private final FoodRepository foodRepository;
     private final WebClient webClient;
+
+    public FoodService(FoodRepository foodRepository,
+                       @Value("${app.openai-api-key}") String openaiApiKey,
+                       @Value("${app.openai-api-organization}") String openaiApiOrganization) {
+
+        this.foodRepository = foodRepository;
+        this.webClient = WebClient.builder()
+                .baseUrl("https://api.openai.com/v1/chat/completions")
+                .defaultHeader("Authorization", "Bearer " + openaiApiKey)
+                .defaultHeader("OpenAI-Organization", openaiApiOrganization)
+                .build();
+    }
 
     public Iterable<Food> getFoods() {
         return foodRepository.findAll();
