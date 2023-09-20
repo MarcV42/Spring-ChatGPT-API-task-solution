@@ -29,7 +29,7 @@ public class FoodService {
     public Food getFood(String id) {
         return foodRepository.findById(id).orElseThrow();
     }
-
+//Abspeichern im Repository:
     public Food createFood(Food food) {
         if (food.category() == null) {
             food = food.withCategory(calculateCategory(food.name()));
